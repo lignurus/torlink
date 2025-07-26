@@ -1,0 +1,50 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сюжет</title>
+  <style>
+    body {
+      background: black;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      line-height: 1.7em;
+    }
+    .choice {
+      margin-top: 30px;
+    }
+    a {
+      color: #0f0;
+      text-decoration: none;
+      display: block;
+      margin: 10px 0;
+      font-size: 20px;
+    }
+    a:hover {
+      color: #6f6;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title"></h1>
+  <p id="story"></p>
+  <div class="choice">
+    <a href="file3.html?ending=успех">✅ Взломать ядро Матрицы</a>
+    <a href="file3.html?ending=провал">❌ Отступить и спастись</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const hero = params.get("hero") || "неизвестный герой";
+
+    const story = {
+      "инженер": "Ты — инженер, способный декодировать сигналы Матрицы. Глубоко под Зеоном ты обнаружил странное искажение...",
+      "шпион": "Ты — шпион. Проник в архивную зону. Агент приближается. Твоё время ограничено...",
+      "проводник": "Ты — проводник. Ты чувствуешь рябь в симуляции. Что-то не так. Матрица начинает замечать тебя..."
+    };
+
+    document.getElementById("title").innerText = `Герой: ${hero}`;
+    document.getElementById("story").innerText = story[hero] || "Ты вступаешь в неизвестность.";
+  </script>
+</body>
+</html>

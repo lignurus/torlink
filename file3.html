@@ -1,0 +1,30 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Итоги</title>
+  <style>
+    body {
+      background: black;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding-top: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Финал</h1>
+  <p id="ending"></p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const ending = params.get("ending");
+
+    if (ending === "успех") {
+      document.getElementById("ending").innerText = "Ты успешно внедрил код. Матрица дала сбой. Искра сопротивления зажглась!";
+    } else {
+      document.getElementById("ending").innerText = "Ты выжил, но Матрица укрепила свою защиту. Сопротивление продолжится без тебя.";
+    }
+  </script>
+</body>
+</html>

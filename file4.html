@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colossal Cave Adventure — текстовая RPG</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      margin: 0; padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #output {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border-bottom: 2px solid #0f0;
+    }
+    #input-form {
+      display: flex;
+      border-top: 2px solid #0f0;
+      padding: 10px;
+    }
+    #command {
+      flex: 1;
+      font-family: monospace;
+      font-size: 1.2em;
+      background: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 8px;
+    }
+    #command:focus {
+      outline: none;
+      border-color: #0ff;
+    }
+    button {
+      background: #0f0;
+      border: none;
+      padding: 10px 20px;
+      margin-left: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+    }
+    button:hover {
+      background: #0ff;
+    }
+  </style>
+</head>
+<body>
+
+<div id="output"></div>
+
+<form id="input-form" autocomplete="off">
+  <input type="text" id="command" placeholder="Введите команду..." autofocus />
+  <button type="submit">Ввод</button>
+</form>
+
+<script>
+  const output = document.getElementById('output');
+  const form = document.getElementById('input-form');
+  const input = document.getElementById('command');
+
+  // Игровое состояние
+  const rooms = {
+    cave_entrance: {
+      description: "Вы стоите у входа в Великую Пещеру. Темнота внутри манит вас. Справа — тропинка ведет в лес, налево — темный коридор.",
+      exits: { north: 'dark_corridor', east: 'forest_path' },
+      items: []
+    },
+    dark_corridor: {
+      description: "Вы вошли в темный коридор. В воздухе пахнет сыростью и тайнами. Тут можно идти назад на юг или дальше на север.",
+      exits: { south: 'cave_entrance', north: 'underground_lake' },
+      items: ['фонарь']
+    },
+    forest_path: {
+      description: "Вы на тропинке в лесу. Пение птиц слышно вокруг, но путь ведет только назад к входу в пещеру.",
+      exits: { west: 'cave_entrance' },
+      items: []
+    },
+    underground_lake: {
+      description: "Вы у подземного озера. Вода черна и бездонна. Тут можно идти обратно на юг.",
+      exits: { south: 'dark_corridor' },
+      items: ['ключ']
+    }
+  };
+
+  let currentRoom = 'cave_entrance';
+  let inventory = [];
+
+  function print(text) {
+    output.textContent += text + '\n\n';
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function showRoom() {
+    print(rooms[currentRoom].description);
+    if(rooms[currentRoom].items.length > 0) {
+      print('Здесь вы видите: ' + rooms[currentRoom].items.join(', '));
+    }
+  }
+
+  function processCommand(command) {
+    command = command.toLowerCase().trim();
+
+    if(command === 'осмотреться' || command === 'look') {
+      showRoom();
+      return;
+    }
+
+    // Движение
+    if(['север', 'юг', 'восток', 'запад', 'north', 'south', 'east', 'west'].includes(command)) {
+      let dirMap = {
+        север: 'north',
+        юг: 'south',
+        восток: 'east',
+        запад: 'west'
+      };
+      let direction = dirMap[command] || command;
+
+      let nextRoom = rooms[currentRoom].exits[direction];
+      if(nextRoom) {
+        currentRoom = nextRoom;
+        showRoom();
+      } else {
+        print("Туда пройти нельзя.");
+      }
+      return;
+    }
+
+    // Взять предмет
+    if(command.startsWith('взять ') || command.startsWith('take ')) {
+      let item = command.split(' ').slice(1).join(' ');
+      let roomItems = rooms[currentRoom].items;
+      if(roomItems.includes(item)) {
+        inventory.push(item);
+        rooms[currentRoom].items = roomItems.filter(i => i !== item);
+        print(`Вы взяли: ${item}`);
+      } else {
+        print(`Здесь нет такого предмета: ${item}`);
+      }
+      return;
+    }
+
+    // Посмотреть инвентарь
+    if(command === 'инвентарь' || command === 'inventory') {
+      if(inventory.length === 0) {
+        print("Ваш инвентарь пуст.");
+      } else {
+        print("В вашем инвентаре: " + inventory.join(', '));
+      }
+      return;
+    }
+
+    // Помощь
+    if(command === 'помощь' || command === 'help') {
+      print(`Доступные команды:
+- осмотреться / look
+- север / south
+- юг / south
+- восток / east
+- запад / west
+- взять [предмет] / take [item]
+- инвентарь / inventory
+- помощь / help`);
+      return;
+    }
+
+    print("Команда не распознана. Введите 'помощь' для списка команд.");
+  }
+
+  // Начинаем игру
+  print("Добро пожаловать в Colossal Cave Adventure!");
+  showRoom();
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const cmd = input.value;
+    if(cmd) {
+      print("> " + cmd);
+      processCommand(cmd);
+      input.value = '';
+    }
+  });
+</script>
+
+</body>
+</html>

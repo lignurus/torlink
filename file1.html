@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Матрица — Главная</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #0f0;
+      font-family: 'Press Start 2P', monospace;
+      overflow: hidden;
+      line-height: 1.8;
+    }
+
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .container {
+      padding: 40px;
+      text-align: center;
+      color: #0f0;
+      text-shadow:
+        -5px 0 0 #555,
+        5px 0 0 #555,
+        0 5px 0 #555,
+        0 -5px 0 #555,
+        3.5px 3.5px 0 #555,
+        -3.5px -3.5px 0 #555,
+        3.5px -3.5px 0 #555,
+        -3.5px 3.5px 0 #555;
+    }
+
+    a {
+      color: #0f0;
+      text-decoration: none;
+      font-size: 18px;
+      margin: 15px;
+      display: inline-block;
+      text-shadow:
+        -5px 0 0 #555,
+        5px 0 0 #555,
+        0 5px 0 #555,
+        0 -5px 0 #555,
+        3.5px 3.5px 0 #555,
+        -3.5px -3.5px 0 #555,
+        3.5px -3.5px 0 #555,
+        -3.5px 3.5px 0 #555;
+    }
+
+    a:hover {
+      color: #0a0;
+    }
+
+    .story {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: 2px solid #555;
+      padding: 30px 40px;
+      margin: 40px auto 0 auto;
+      max-width: 700px;
+      text-align: center;
+      font-size: 12px;
+      color: #0f0;
+      line-height: 2;
+      text-shadow:
+        -3px 0 0 #555,
+        3px 0 0 #555,
+        0 3px 0 #555,
+        0 -3px 0 #555,
+        2.5px 2.5px 0 #555,
+        -2.5px -2.5px 0 #555,
+        2.5px -2.5px 0 #555,
+        -2.5px 2.5px 0 #555;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <h1>Добро пожаловать в Матрицу тестирования</h1>
+  <p>Погрузись в мир знаний и мастерства QA.</p>
+  <nav>
+    <a href="file2.html">Регистрация</a>
+    <a href="file3.html">Личный кабинет</a>
+  </nav>
+
+  <div class="story">
+    <h2>Сюжет</h2>
+    <p>
+      Ты находишься в Матрице — цифровой вселенной,<br>
+      где баги — это оружие против систем.<br>
+      Только избранные способны выявлять ложь в коде<br>
+      и правду в логах.<br>
+      Прими вызов и стань тестировщиком нового поколения.
+    </p>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*()*&^%'.split('');
+  const fontSize = 16;
+  const columns = Math.floor(width / fontSize);
+  const drops = Array(columns).fill(1);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  setInterval(draw, 35);
+
+  window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  });
+</script>
+
+</body>
+</html>
